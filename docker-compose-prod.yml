@@ -18,6 +18,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - default
 
   app:
     build:
@@ -36,7 +38,17 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    networks:
+      - default
+      - proxy-net
 
 volumes:
   postgres_data:
   uploads_data:
+
+networks:
+  default:
+    driver: bridge
+  proxy-net:
+    external: true
+    driver: bridge
