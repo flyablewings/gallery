@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
-import { writeFile } from "fs/promises";
+import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { getUserFromRequest } from "@/lib/auth-middleware";
 
@@ -45,6 +45,13 @@ export async function POST(request: NextRequest) {
     // Save file to public/uploads directory
     const uploadDir = path.join(process.cwd(), "public", "uploads");
     const filePath = path.join(uploadDir, filename);
+
+    // Ensure upload directory exists
+    try {
+      await mkdir(uploadDir, { recursive: true });
+    } catch (error) {
+      // Directory might already exist, continue
+    }
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
